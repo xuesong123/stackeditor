@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>StackEditor</title>
+<link rel="stylesheet" href="./dist/stackeditor-1.0.0/css/stackeditor-1.0.0.css">
+<style type="text/css">
+html, body{margin: 0px 0px; padding: 0px 0px; overflow: hidden;}
+div.panel{margin: 0px auto; width: 1000px; height: 100vh; border: none; overflow: hidden;}
+h3.tips{margin: 0px 0px; padding: 10px 0px;}
+div.container{margin: 0px 0px; padding: 0px 0px; height: calc(100% - 60px);}
+div.container.word{position: fixed; top: 0px; left: 0px; width: 100%; height: 100%;}
+
+div.dock{position: fixed; right: 40px; bottom: 200px; padding: 4px; width: 48px; height: 200px; box-sizing: border-box;}
+div.dock button{margin: 4px 0px; width: 40px; height: 40px; border-radius: 50%; border: none; background-color: #f8f8f8; transition: all .3s ease; cursor: pointer;}
+div.dock button:hover{background: #66b1ff; color: #ffffff; transform: scale(1.1);}
+</style>
+<script type="text/javascript" src="./dist/stackeditor-1.0.0/stackeditor-1.0.0.umd.js"></script>
+
+<!-- 代码块语法高亮需手动导入 -->
+<!-- script type="text/javascript" src="/resource/prismjs/1.30.0/prism.js"></script -->
+<!-- script type="text/javascript" src="/resource/prismjs/1.30.0/components/prism-javascript.js"></script -->
+<!-- script type="text/javascript" src="/resource/prismjs/1.30.0/components/prism-python.js"></script -->
+<script type="text/javascript">
+window.addEventListener("load", function() {
+    if(window.location.hash == "#word") {
+        const c = document.getElementById("editor");
+        c.classList.add("word");
+    }
+});
+
+window.addEventListener("load", function() {
+    const { StackEditor, EditCommand, DefaultUpload, Base64Upload, MockUpload, DOM, Ajax, Sharing } = window.StackEditorComponent;
+    const smile = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M512 746.666667C611.413333 746.666667 695.466667 684.373333 730.026667 597.333333L293.973333 597.333333C328.106667 684.373333 412.586667 746.666667 512 746.666667M362.666667 469.333333C398.08 469.333333 426.666667 440.746667 426.666667 405.333333 426.666667 369.92 398.08 341.333333 362.666667 341.333333 327.253333 341.333333 298.666667 369.92 298.666667 405.333333 298.666667 440.746667 327.253333 469.333333 362.666667 469.333333M661.333333 469.333333C696.746667 469.333333 725.333333 440.746667 725.333333 405.333333 725.333333 369.92 696.746667 341.333333 661.333333 341.333333 625.92 341.333333 597.333333 369.92 597.333333 405.333333 597.333333 440.746667 625.92 469.333333 661.333333 469.333333M512 853.333333C323.413333 853.333333 170.666667 700.586667 170.666667 512 170.666667 323.413333 323.413333 170.666667 512 170.666667 700.586667 170.666667 853.333333 323.413333 853.333333 512 853.333333 700.586667 700.586667 853.333333 512 853.333333M512 85.333333C276.053333 85.333333 85.333333 277.333333 85.333333 512 85.333333 747.52 276.48 938.666667 512 938.666667 747.52 938.666667 938.666667 747.52 938.666667 512 938.666667 276.48 747.52 85.333333 512 85.333333Z\"/></svg>";
+
+    // save, |, cut, copy, paste, |, format, fontfamily, fontsize, quote, |, strong, italic, underline, strikethrough, forecolor, backcolor, clean, |, ulist, olist, lift, align, dedent, indent, |, link, unlink, anchor, image, video, audio, attachment, hr, emot, table, code, undo, redo, fullscreen, |, assets, share, lock, info, setting
+    const element = document.getElementById("editor");
+    const menubar = {
+        "items": [
+            {
+                "name": "mymenu1",
+                // "icon": "cut",
+                // "icon": "<img src=\"/resource/images/smile.jpg\">",
+                "icon": DOM.create("span", null, ["酒"]),
+                // "icon": "help",
+                "label": "mymenu1",
+                "title": "我的菜单",
+                "run": EditCommand.select
+            },
+            {
+                "name": "mymenu2",
+                "icon": "paste",
+                "label": "mymenu2",
+                "title": "mymenu2",
+                "items": [
+                    {
+                        "name": "mymenu3",
+                        "icon": "emot",
+                        "label": "mymenu3",
+                        "title": "mymenu3",
+                        "run": function(state, dispathch, view, event) {
+                            alert(this.name + " clicked.");
+                        }
+                    },
+                    {
+                        "name": "mymenu4",
+                        "icon": smile,
+                        "label": "mymenu4",
+                        "title": "mymenu4",
+                        "run": function(state, dispathch, view, event) {
+                            alert(this.name);
+                        }
+                    },
+                    {
+                        "name": "mymenu5",
+                        "icon": smile,
+                        "label": "mymenu5",
+                        "title": "mymenu5",
+                        "run": function(state, dispathch, view, event) {
+                            alert(this.name);
+                        }
+                    },
+                    {
+                        "name": "mymenu6",
+                        "icon": smile,
+                        "label": "mymenu6",
+                        "title": "mymenu6",
+                        "run": function(state, dispathch, view, event) {
+                            alert(this.name);
+                        }
+                    }
+                ]
+            }
+        ],
+        // 设置显示哪些菜单
+        // "enabled": "save | mymenu1 mymenu2 | quote bold italic underline strikethrough forecolor backcolor clean | table"
+    };
+
+    // 创建编辑器
+    const editor = new StackEditor({
+        "menubar": menubar,
+        "editor": {
+            "title": {
+                "placeholder": "test",
+                "defval": "测试文档",
+                "enabled": true
+            }
+        }
+    });
+
+    // 指定上传组件
+    // editor.upload = new DefaultUpload({
+    //     "url": "/blog/upload.html",
+    //     "chunk": 5 * 1024 * 1024,
+    //     "getData": function() {
+    //         return {"docId": 1};
+    //     },
+    //     "getResponse": function(xhr) {
+    //          return JSON.parse(xhr.responseText);
+    //     }
+    // });
+
+    // editor.upload = new Base64Upload({
+    //     "url": "/blog/upload/base64.html",
+    // 
+    //     // 可选，指定上传时的 JSON
+    //     "getData": function(blob, data) {
+    //         return {
+    //             "docId": 2,
+    //             "ext": data.name.split(".").pop(),
+    //             "name": data.name,
+    //             "size": data.size,
+    //             "data": data.data.split(";base64,").pop()
+    //         };
+    //     },
+    // 
+    //     // 可选，将返回结果转换为符合编辑器要求的格式
+    //     "getResponse": function(xhr) {
+    //         const response = {
+    //             "status": 200,
+    //             "message": "success",
+    //             "value": {
+    //                 "name": "1.jpg",
+    //                 "size": 12345,
+    //                 "url": "/1.jpg"
+    //             }
+    //         };
+    //         return JSON.parse(xhr.responseText);
+    //     }
+    // });
+
+    // 加载资源
+    editor.assetsManager.from(document.querySelector("#content"));
+    editor.assetsManager.from("<div><img src=\"dist/resource/images/e1.jpg\"></div>");
+
+    // 手动向资源库添加资源
+    editor.assetsManager.add({"name": "e1.jpg", "src": "dist/resource/images/e1.jpg", "size": 12345}, "image");
+    editor.assetsManager.add({"name": "11.mp4", "src": "dist/resource/video/11.mp4", "size": 12345}, "video");
+    editor.assetsManager.add({"name": "11.mp4", "url": "dist/resource/video/11.mp4", "size": 12345}, "attachment");
+
+    // 初始化编辑器
+    editor.render(element, document.querySelector("#content"));
+
+    // CORS 资源获取服务端接口地址
+    Sharing.URL = "/blog/sharing/get.html";
+});
+
+window.addEventListener("load", function() {
+    document.querySelector("div.dock button[name='test1']").addEventListener("click", function() {
+        // const c = document.getElementById("editor");
+        // c.classList.add("word");
+
+        window.location.href = window.location.pathname + "#word";
+        window.location.reload();
+    });
+
+    document.querySelector("div.dock button[name='test2']").addEventListener("click", function() {
+        // const c = document.getElementById("editor");
+        // c.classList.remove("word");
+
+        window.location.href = window.location.pathname;
+    });
+});
+</script>
+</head>
+<body>
+<div class="panel">
+    <h3 class="tips">当前为 UMD 方式引入，ES6 Module 模式需将 dist 目录放到 Http Server 下并访问 /preview.html</h3>
+    <div id="editor" class="container"></div>
+</div>
+<div class="dock">
+    <button name="test1" type="button" title="Word 样式">W</button>
+    <button name="test2" type="button" title="普通样式">N</button>
+</div>
+
+<div id="content" style="display: none;">
+    <p style="text-indent: 2em;">Hello</p>
+    <p></p>
+    <p><span style="font-size: 24px;">Hello World</span></p>
+    <p><span style="font-family: 宋体;">Hello World</span></p>
+    <h1>Example content</h1>
+    <h2>Example content</h2>
+    <h3>Example content</h3>
+    <p>Hello</p>
+    <pre><code>dsafdsafdasfdas</code></pre>
+    <p>由于语义比较模糊，如果可能，尽量配合 <code>title</code> 属性或上下文来解释为什么这段文字有下划线。由于语义比较模糊，如果可能，尽量配合 <code>title</code> 属性或上下文来解释为什么这段文字有下划线。由于语义比较模糊，如果可能，尽量配合 <code>title</code> 属性或上下文来解释为什么这段文字有下划线。</p>
+    <p></p>
+    <p style="text-align: center;">
+        <img src="dist/resource/images/e1.jpg" style="margin: 0 auto;" width="300" height="240"/>
+        <img src="dist/resource/images/e2.jpg" style="width: 300px; height: 240px;"/>
+    </p>
+    <p><attachment data-name="视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集.zip" data-size="1926000000" data-url="/upload/xxx.zip"></attachment>sfdasdljdasf<br/>daslfdklsjflk</p>
+    <p>The table:</p>
+    <p>
+    <table>
+        <tr>
+            <th colspan="3" data-colwidth="100,0,0">Wide header</th>
+        </tr>
+        <tr>
+            <td>One</td>
+            <td>Two</td>
+            <td>Three</td>
+        </tr>
+        <tr>
+            <td>Four</td>
+            <td>Five</td>
+            <td>Six</td>
+        </tr>
+    </table>
+    </p>
+</div>
+</body>
+</html>
