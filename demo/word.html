@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>StackEditor</title>
+<link rel="stylesheet" href="/demo/resource/css/example.css">
+<link rel="stylesheet" href="/dist/stackeditor-1.0.0/css/stackeditor-1.0.0.css">
+<style type="text/css">
+div.panel{height: 100%; overflow: hidden;}
+</style>
+<script type="module">
+import * as EditorComponent from "/dist/stackeditor-1.0.0/stackeditor-1.0.0.es.js";
+
+const {StackEditor, EditCommand, DefaultUpload, Base64Upload, MockUpload, DOM, Ajax, Sharing} = EditorComponent;
+
+window.addEventListener("load", function() {
+    const editor = new StackEditor({
+        "editor": {
+            "nodebar": {"enabled": true},
+            "title": {
+                "placeholder": "请输入标题",
+                "value": "测试文档",
+                "enabled": true
+            }
+        }
+    });
+
+    editor.save = function() {
+        const title = this.getTitle();
+        const value = this.getValue();
+
+        console.log(title);
+        console.log(value);
+        alert("保存成功");
+    };
+
+    // 初始化编辑器
+    editor.render(document.getElementById("editor"), document.querySelector("#content"));
+});
+</script>
+</head>
+<body class="example">
+<div id="editor" class="panel word"></div>
+<div id="content" style="display: none;">
+    <p style="text-indent: 2em;">Hello</p>
+    <p></p>
+    <p><span style="font-size: 24px;">Hello World</span></p>
+    <p><span style="font-family: 宋体;">Hello World</span></p>
+    <h1>Example content</h1>
+    <h2>Example content</h2>
+    <h3>Example content</h3>
+    <p>Hello</p>
+    <pre><code>dsafdsafdasfdas</code></pre>
+    <p>由于语义比较模糊，如果可能，尽量配合 <code>title</code> 属性或上下文来解释为什么这段文字有下划线。由于语义比较模糊，如果可能，尽量配合 <code>title</code> 属性或上下文来解释为什么这段文字有下划线。由于语义比较模糊，如果可能，尽量配合 <code>title</code> 属性或上下文来解释为什么这段文字有下划线。</p>
+    <p></p>
+    <p style="text-align: center;">
+        <img src="/demo/resource/images/e1.jpg" style="margin: 0 auto;" width="300" height="240"/>
+        <img src="/demo/resource/images/e2.jpg" style="width: 300px; height: 240px;"/>
+    </p>
+    <p><attachment data-name="视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集视频合集.zip" data-size="1926000000" data-url="/upload/xxx.zip"></attachment>sfdasdljdasf<br/>daslfdklsjflk</p>
+    <p>The table:</p>
+    <p>
+        <table>
+            <tr>
+                <th colspan="3" data-colwidth="100,0,0">Wide header</th>
+            </tr>
+            <tr>
+                <td>One</td>
+                <td>Two</td>
+                <td>Three</td>
+            </tr>
+            <tr>
+                <td>Four</td>
+                <td>Five</td>
+                <td>Six</td>
+            </tr>
+        </table>
+    </p>
+</div>
+</body>
+</html>

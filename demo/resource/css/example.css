@@ -1,0 +1,17 @@
+html, body{margin: 0px 0px; padding: 0px 0px; height: 100%; overflow: hidden;}
+body *{margin: 0px 0px; padding: 0px 0px; box-sizing: border-box;}
+
+::-webkit-scrollbar{width: 12px; height: 12px}
+::-webkit-scrollbar-button{display: none;}
+::-webkit-scrollbar-track{background-color: transparent; border-radius: 9px;}
+::-webkit-scrollbar-track-piece{background-color: transparent; border-radius: 9px;}
+::-webkit-scrollbar-thumb{border: solid 2px transparent; border-radius: 9px; background-color: #d8d8d8; -webkit-background-clip: content-box; background-clip: content-box; min-height: 28px;}
+::-webkit-scrollbar-thumb:hover{}
+
+div.menubar{padding: 0px 20px; height: 40px; box-sizing: border-box; border-bottom: 1px solid #cccccc; background-color: #f8f8f8;}
+div.left{float: left; width: 200px; height: 100%; box-sizing: border-box; border-right: 1px solid #cccccc; background-color: #f8f8f8; overflow-y: auto;}
+div.main{margin-left: 200px; padding: 20px 40px 0px 40px; height: 100%;}
+ul.nav{margin-top: 20px; margin-left: 20px; padding: 0px 0px; list-style: none;}
+ul.nav li{line-height: 32px;}
+ul.nav a{color: #333; text-decoration: none; outline: none;}
+ul.nav a:hover{text-decoration: underline;}
